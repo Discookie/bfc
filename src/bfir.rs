@@ -12,6 +12,8 @@ use std::num::Wrapping;
 #[cfg(test)]
 use pretty_assertions::assert_eq;
 
+use serde::{Serialize, Deserialize};
+
 use self::AstNode::*;
 
 /// A cell is the fundamental BF datatype that we work with. BF
@@ -20,7 +22,7 @@ use self::AstNode::*;
 pub type Cell = Wrapping<i8>;
 
 /// An inclusive range used for tracking positions in source code.
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]
 pub struct Position {
     pub start: usize,
     pub end: usize,
@@ -67,7 +69,7 @@ impl Combine<Option<Position>> for Option<Position> {
 }
 
 /// `AstNode` represents a node in our BF AST.
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone, Serialize, Deserialize)]
 pub enum AstNode {
     Increment {
         amount: Cell,

@@ -17,6 +17,8 @@ extern crate pretty_assertions;
 #[cfg(test)]
 extern crate quickcheck;
 extern crate tempfile;
+extern crate serde;
+extern crate serde_json;
 
 #[macro_use]
 extern crate matches;
@@ -167,6 +169,10 @@ fn compile_file(matches: &Matches) -> Result<(), String> {
         }
         return Ok(());
     }
+    if matches.opt_present("dump-ir-json") {
+        println!("{}", serde_json::to_string(&instrs).map_err(|e| e.to_string())?);
+        return Ok(());
+    }
 
     let (state, execution_warning) = if opt_level == "2" {
         execution::execute(&instrs, execution::max_steps())
@@ -263,6 +269,7 @@ fn main() {
     opts.optflag("v", "version", "print bfc version");
     opts.optflag("", "dump-llvm", "print LLVM IR generated");
     opts.optflag("", "dump-ir", "print BF IR generated");
+    opts.optflag("", "dump-ir-json", "print BF IR in json");
 
     opts.optopt("O", "opt", "optimization level (0 to 2)", "LEVEL");
     opts.optopt("", "llvm-opt", "LLVM optimization level (0 to 3)", "LEVEL");
